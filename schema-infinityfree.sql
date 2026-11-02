@@ -114,3 +114,18 @@ CREATE TABLE IF NOT EXISTS password_resets (
     INDEX idx_user_time (user_id, created_at),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- When each member was last active on the site (used for "online now" on the admin users page).
+CREATE TABLE IF NOT EXISTS user_activity (
+    user_id   INT UNSIGNED NOT NULL PRIMARY KEY,
+    last_seen DATETIME     NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Profile photos. Each one is stored as a small square JPEG (256 by 256 pixels).
+CREATE TABLE IF NOT EXISTS user_avatars (
+    user_id    INT UNSIGNED NOT NULL PRIMARY KEY,
+    image      MEDIUMBLOB   NOT NULL,
+    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

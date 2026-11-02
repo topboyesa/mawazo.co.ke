@@ -19,6 +19,10 @@ if (!empty($_SESSION['user_id'])) {
         $stmt = $pdo->prepare('SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0');
         $stmt->execute([(int) $_SESSION['user_id']]);
         $unread = (int) $stmt->fetchColumn();
+
+        // Remember that this member is active right now (for the admin users page).
+        $pdo->prepare('INSERT INTO user_activity (user_id, last_seen) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE last_seen = NOW()')
+            ->execute([(int) $_SESSION['user_id']]);
     } catch (PDOException $ex) {
         // A missing table just means no admin rights or no notifications yet.
     }

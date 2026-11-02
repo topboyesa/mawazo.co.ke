@@ -26,11 +26,7 @@ function ago(int $seconds): string
 // Same round icon as on the main page: first letter, colour picked from the name.
 function avatar_html(string $name, int $size = 40): string
 {
-    $hue = 0;
-    foreach (str_split($name) as $ch) {
-        $hue = ($hue * 31 + ord($ch)) % 360;
-    }
-    return '<span aria-hidden="true" style="display: inline-flex; align-items: center; justify-content: center; flex: none; width: ' . $size . 'px; height: ' . $size . 'px; border-radius: 50%; background: hsl(' . $hue . ', 55%, 40%); color: #fff; font-weight: bold; font-size: ' . round($size * 0.5) . 'px;">' . e(strtoupper(substr($name, 0, 1))) . '</span>';
+    return '<img src="avatar.php?u=' . e(rawurlencode($name)) . '" alt="" width="' . $size . '" height="' . $size . '" style="flex: none; display: block; border-radius: 50%; object-fit: cover;">';
 }
 
 $me       = (int) $_SESSION['user_id'];
