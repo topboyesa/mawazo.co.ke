@@ -77,4 +77,5 @@ page_head('Log in');
 </form>
 
 <p style="text-align: center;">No account yet? <a href="signup.php">Sign up</a></p>
+<p style="text-align: center;"><a href="forgot.php">Forgot your password?</a></p>
 <?php page_foot();

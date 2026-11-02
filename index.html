@@ -37,6 +37,17 @@
         .comments .error { margin-left: 10px; color: #c0392b; }
         :root.dark .comments .error { color: #ff7b72; }
         :root.dark .comments a { color: #8ab4f8; }
+        article { position: relative; }
+        .author { margin-top: 8px; font-weight: bold; }
+        .post-menu-btn { position: absolute; top: 0; right: 0; display: flex; padding: 6px; border: none; border-radius: 50%; background: none; color: inherit; cursor: pointer; }
+        .post-menu-btn:hover { background: var(--hover); }
+        .popover { position: absolute; z-index: 10; min-width: 200px; background: var(--bg); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); overflow: hidden; }
+        .popover .item { display: block; width: 100%; padding: 12px 16px; border: none; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+        .popover .item:hover { background: var(--hover); }
+        .popover.signin { width: 280px; padding: 20px; box-sizing: border-box; border-radius: 20px; text-align: center; }
+        .popover.signin .t { font-size: 1.2em; font-weight: bold; }
+        .popover.signin .s { margin: 6px 0 16px; opacity: 0.7; }
+        .popover.signin .btn { display: block; padding: 10px; border-radius: 24px; background: var(--fg); color: var(--bg); text-decoration: none; font-weight: bold; }
     </style>
     <script>
         (function () {
@@ -109,115 +120,21 @@
 <p id="no-results" hidden style="text-align: center;">No articles found.</p>
 
 <main id="articles">
-<article id="post-1">
-<h2>"if the product is free then you're the product"</h2>
-<p>
-    So I volunteered for a job. I wanted to build an app for a business that didn't need it for my portfolio. Hello recruiter..
-    Genarating apps with AI has become so much easier that I sometimes wonder how software developers are supposed to provide value. 
-    In some sense the sweat and blood involved in the process made it more valuable. I get it it is just perception. 
-    So, I got the job and did it till I burnt out. I go all out. At the end of it, bossman liked it. I wasn't impressed though. 
-    I knew I could do better, sometimes I feel that is my problem but maybe it is a feature. The self-doubt,
-    it makes me constantly seek to improve in every task I try to do. I usually expect to be blown away by my work if it is good.
-    Affirmations are good too, I won't try to downplay it.
-    Reminds me of a quote, "It is not about the destination it is the journey." Whatever.<br><br>
-
-    At the end of it, I was thinking about something more complex I could showcase on my portfolio. A win-win, maybe.
-    Then I started enjoying going to work, a bit too much though. Problem is if you enjoy the work you forget about the people - co-workers
-    that is. And it tends to cause problems, people feel like you're ignoring them and their endless stories. So some friction started to appear
-    in my relationship with bossman. Turns out it is not liked if you're having a good time at work. Like you're supposed to be sad or something while working. Crazy.
-    But in my free time I came up with a "notes-app", that turned out to be this blog. I write about my working journey with AI . Hopefully my writing is not bad and you like it.
-    At least I won't be fired for nothing.
-    <br><br>
-
-    I might actually love working, I chose to do this after-all. 
-    <br><br>
-
-    Feedback on this blog will be appreciated. 
-    <br><br>
-    Regards.
-
-    <i><time datetime="2026-10-13T21:40" style="display: block; text-align: right;">Tuesday 13th October, 2026. 2140 HRS</time></i>
-</p>
-</article>
-
-<article id="post-2">
-<h2>I'm Sorry but Microsoft Copilot is shit</h2>
-<p>
-    A year has gone-by ever since I used Copilot for the first time, 
-    and it complicated my code in a way that I have never seen before.
-    I am a barebones HTML guy. I write only what is necessary, if the code will run
-    without the body tags, I probably wouldn't write it. And I sometimes don't.
-    Divs alone make things hard for me, let alone external CSS. When I was learning programming,
-    linking files was my worst nightware. Right now AI probably writes it for you
-    and links everything including the JavaScript. The more I write code and learn about new frameworks,
-    the more I get blown away by simple things such as centering a simple header by myself.
-    Simple programs actually look better to me.
-    Reminds me of something similar, a book, right?
-    Simple plain black text over a white page. The OG theme.
-    <br><br>
-
-    It's crazy how it takes years of practice to master the basics. I have been programming for a while.
-    I still write "hello world". At least I understand it now.
-    It is funny how I can generate a full-stack application in an hour right now. Understanding it fully though will
-    take some practice.
-    Honestly frontends alone are so much work. Especially designing and building frontends for existing business?
-    It is so crazy. Pre-conceived themes and styles are so limiting on the things you can try out. 
-    <br><br>
-
-    Programming with AI has definitely improved from the first time I tried it, and by that I mean Claude. Copilot still feels complex.
-    So here we go again, I decide where to place the pictures and AI generates me an "acceptable webpage by today's standards with links scrolling to the same page, right?"
-    Preview and everything. It is funny how a regular non IT person doesn't know what index.html is.
-    If I write code for a client they mostly don't know how to run it.
-    So yea, maybe centering a div is some elite ball.<br><br>
-
-    Back to Copilot. It generates some code, I change system variables... Install some things... then some more things I have to Install
-    to make it work, it tells me my code can't work because of bugs. I copy paste the bugs it generates a fix, it doesn,t work. I redo it
-    about 30 more times, then give up. I have never looked at the code again about a year later.
-    The real quaestion is, would still be able to work without AI tools? 
-    What if you didn't have the internet to download packages and frameworks?
-    What if you didn't have an IDE?
-    What if you had to rely on the command line? That's where the real guys write.<br><br>
-
-    On the positive side it is actually fun to build a full-stack app in 5 mins. Although you might lose interest in it in about 5 mins.
-    Quality doesn't require complexity, just value.
-    <br><br>
-
-    So spin up apps and center a div or two.
-    <br><br>
-
-    <i><time datetime="2026-10-14T23:05" style="display: block; text-align: right;">Wednesday 14th October, 2026. 2305 HRS</time></i>
-</p>
-</article>
-
-<article id="post-3">
-<h2>The future is only for people who think AI isn't gonna replace them</h2>
-<p>
-    Do you think AI is gonna replace you? Are you worried? For whatsoever a man thinks of himself so is he.
-    For me AI is more like getting a slave in some centuries back.
-    Its benefits seems far more greater.
-    <br><br>
-
-    If AI is banned tomorrow I'll probably be fine. I'd still be able to do things not so greatly though, it would be like taking us back to the past.
-    It is so easy to become dependant on something once you start using it. 
-    I am more scared of not having AI than being replaced by it.
-    Writing will do better without it in my view, for example.
-    You can only reap the benefits of writing such as processing your thoughts by doing it yourself I admit the technology makes it faster
-    but still.
-    <br><br>
-
-    I am guessing that with the advancement of AI, my simple apps are uncommon. So write now I am making things in black and white.
-    <br><br>
-
-
-    <i><time datetime="2026-10-15T00:49" style="display: block; text-align: right;">Thursday 15th October, 2026. 0049 HRS</time></i>
-</p>
-</article>
 </main>
 
 <!--Slop Bot-->
 
 <script>
+    var ownerName = null;
     function start() {
+    // The little red number on the bell: how many notifications are unread.
+    function setBadge(n) {
+        var b = document.getElementById("notif-badge");
+        if (!b) return;
+        n = n || 0;
+        b.hidden = n < 1;
+        b.textContent = n > 9 ? "9+" : n;
+    }
     // A round profile icon (first letter of the username, in a color picked from the name) plus the @tag.
     function profile(name, size) {
         var hue = 0;
@@ -264,6 +181,20 @@
             form.innerHTML = '<input type="hidden" name="csrf"><button type="submit" style="background: none; border: none; padding: 0; font: inherit; color: inherit; cursor: pointer;">logout</button>';
             form.elements.csrf.value = d.csrf;
             document.getElementById("auth-signup").replaceChildren(form);
+            var bell = document.createElement("li");
+            bell.style.position = "relative";
+            bell.innerHTML = '<a href="notifications.php" aria-label="notifications" title="notifications" style="display: flex; color: inherit;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></a>' +
+                '<span id="notif-badge" hidden style="position: absolute; top: -6px; right: -9px; min-width: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #e0245e; color: #fff; font-size: 11px; line-height: 16px; text-align: center;"></span>';
+            document.getElementById("auth-login").before(bell);
+            setBadge(d.unread);
+            // Check for new likes, comments and follows every half minute while the page is open.
+            setInterval(function () {
+                if (document.hidden) return;
+                fetch("me.php", { credentials: "same-origin" })
+                    .then(function (r) { return r.ok ? r.json() : null; })
+                    .then(function (x) { if (x) setBadge(x.unread); })
+                    .catch(function () {});
+            }, 30000);
         })
         .catch(function () {});
 
@@ -327,8 +258,8 @@
             '<button type="button" class="comment-toggle" aria-label="comments">' + commentIcon + '<span></span></button>' +
             '<span class="views"></span>' +
             '<span class="note" hidden><a href="login.php">Log in</a> to like or dislike.</span>';
-        b.querySelector(".like").addEventListener("click", function () { vote(a.id, 1); });
-        b.querySelector(".dislike").addEventListener("click", function () { vote(a.id, -1); });
+        b.querySelector(".like").addEventListener("click", function (e) { e.stopPropagation(); vote(a.id, 1, this); });
+        b.querySelector(".dislike").addEventListener("click", function (e) { e.stopPropagation(); vote(a.id, -1, this); });
         b.querySelector(".comment-toggle").addEventListener("click", function () { toggleComments(a); });
         a.appendChild(b);
         return b;
@@ -345,9 +276,9 @@
     }
 
     // Clicking the same button again takes your vote back.
-    function vote(id, value) {
+    function vote(id, value, btn) {
         var a = document.getElementById(id);
-        if (!loggedIn) { a.querySelector(".note").hidden = false; return; }
+        if (!loggedIn) { signInPrompt(btn, "Want to join the conversation?"); return; }
         var next = statOf(id).mine === value ? 0 : value;
         fetch("vote.php", {
             method: "POST",
@@ -397,6 +328,141 @@
             var h = a.querySelector("h2");
             if (h) io.observe(h);
         });
+    }
+
+    // ----- sign-in popup, the ... menu on each post, and follow -----
+    var follow = { me: null, set: {} };
+    var openPopover = null;
+    var dotsIcon = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg>';
+
+    function closePopover() {
+        if (openPopover) { openPopover.remove(); openPopover = null; }
+    }
+
+    function showPopover(anchor, el, alignRight) {
+        // Clicking the same button again closes its popup instead of opening it twice.
+        if (openPopover && openPopover._anchor === anchor) { closePopover(); return; }
+        closePopover();
+        el.classList.add("popover");
+        el.style.visibility = "hidden";
+        document.body.appendChild(el);
+        var r = anchor.getBoundingClientRect();
+        var left = alignRight ? r.right - el.offsetWidth : r.left;
+        left = Math.max(8, Math.min(left, document.documentElement.clientWidth - el.offsetWidth - 8));
+        el.style.left = (left + window.scrollX) + "px";
+        el.style.top = (r.bottom + window.scrollY + 6) + "px";
+        el.style.visibility = "visible";
+        el._anchor = anchor;
+        openPopover = el;
+    }
+
+    document.addEventListener("click", function (e) {
+        if (openPopover && !openPopover.contains(e.target)) closePopover();
+    });
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") closePopover();
+    });
+
+    // Shown when a visitor who is not logged in tries to like, dislike, follow or comment.
+    function signInPrompt(anchor, title) {
+        var el = document.createElement("div");
+        el.className = "signin";
+        el.innerHTML = '<div class="t"></div><div class="s">Sign in to continue</div><a class="btn" href="login.php">Sign in</a>';
+        el.querySelector(".t").textContent = title;
+        showPopover(anchor, el, false);
+    }
+
+    function deletePost(a) {
+        if (!confirm("Delete this post and its comments, likes and views?")) return;
+        var f = document.createElement("form");
+        f.method = "post";
+        f.action = "write.php";
+        [["csrf", csrf], ["action", "delete"], ["id", a.dataset.db], ["back", "1"]].forEach(function (p) {
+            var i = document.createElement("input");
+            i.type = "hidden";
+            i.name = p[0];
+            i.value = p[1];
+            f.appendChild(i);
+        });
+        document.body.appendChild(f);
+        f.submit();
+    }
+
+    function toggleFollow(anchor, name) {
+        if (!loggedIn) { signInPrompt(anchor, "Want to follow @" + name + "?"); return; }
+        var want = !follow.set[name];
+        fetch("follow.php", {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: new URLSearchParams({ csrf: csrf, user: name, follow: want ? "1" : "0" })
+        })
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (d) {
+                if (d.following) follow.set[name] = true; else delete follow.set[name];
+            })
+            .catch(function () {});
+    }
+
+    function loadFollow() {
+        return fetch("follow.php", { credentials: "same-origin" })
+            .then(function (r) { return r.ok ? r.json() : null; })
+            .then(function (d) {
+                if (!d || d.error) return;
+                follow = { me: d.me || null, set: {} };
+                (d.following || []).forEach(function (n) { follow.set[n] = true; });
+            })
+            .catch(function () {});
+    }
+
+    // Posts written from the site carry their author; the three in this file belong to the site owner.
+    function authorOf(a) {
+        return a.dataset.author || ownerName;
+    }
+
+    function openMenu(a, btn) {
+        var el = document.createElement("div");
+        var who = authorOf(a);
+        function item(label, fn) {
+            var i = document.createElement("button");
+            i.type = "button";
+            i.className = "item";
+            i.textContent = label;
+            i.addEventListener("click", function (e) { e.stopPropagation(); closePopover(); fn(); });
+            el.appendChild(i);
+        }
+        if (a.dataset.manage) {
+            item("Edit post", function () { location.href = "write.php?id=" + a.dataset.db; });
+            item("Delete post", function () { deletePost(a); });
+        }
+        if (who && who !== follow.me) {
+            item((follow.set[who] ? "Unfollow @" : "Follow @") + who, function () { toggleFollow(btn, who); });
+        }
+        showPopover(btn, el, true);
+    }
+
+    // The profile icon and @tag of whoever wrote the post, shown at the top.
+    function addAuthor(a) {
+        var who = authorOf(a);
+        if (!who || a.querySelector(".author")) return;
+        var row = document.createElement("div");
+        row.className = "author";
+        row.appendChild(profile(who, 28));
+        a.insertBefore(row, a.firstChild);
+    }
+
+    // The ... button only appears when it would have something in it.
+    function ensureMenu(a) {
+        if (a.querySelector(".post-menu-btn")) return;
+        var who = authorOf(a);
+        if (!a.dataset.manage && !(who && who !== follow.me)) return;
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "post-menu-btn";
+        b.setAttribute("aria-label", "post options");
+        b.innerHTML = dotsIcon;
+        b.addEventListener("click", function (e) { e.stopPropagation(); openMenu(a, b); });
+        a.insertBefore(b, a.firstChild);
     }
 
     // ----- comments -----
@@ -478,9 +544,13 @@
         }
 
         if (!loggedIn) {
-            var ask = document.createElement("p");
-            ask.innerHTML = '<a href="login.php">Log in</a> to comment.';
-            box.appendChild(ask);
+            var fake = document.createElement("input");
+            fake.type = "text";
+            fake.readOnly = true;
+            fake.placeholder = "Add a comment...";
+            fake.style.cssText = "display: block; width: 100%; box-sizing: border-box; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; cursor: pointer;";
+            fake.addEventListener("click", function (e) { e.stopPropagation(); signInPrompt(fake, "Want to join the conversation?"); });
+            box.appendChild(fake);
             return;
         }
 
@@ -528,6 +598,7 @@
             articles.forEach(render);
             applySort();
             watchViews();
+            loadFollow().then(function () { articles.forEach(function (a) { addAuthor(a); ensureMenu(a); }); });
         })
         .catch(function () {});
 
@@ -547,6 +618,9 @@
         d.posts.forEach(function (p) {
             var a = document.createElement("article");
             a.id = p.id;
+            a.dataset.db = p.id.replace("post-", "");
+            if (p.author) a.dataset.author = p.author;
+            if (p.canManage) a.dataset.manage = "1";
             var h = document.createElement("h2");
             h.textContent = p.title;
             var body = document.createElement("p");
@@ -564,7 +638,8 @@
             a.appendChild(it);
             box.appendChild(a);
         });
-        if (d.admin) {
+        ownerName = d.owner || null;
+        if (d.loggedIn) {
             var li = document.createElement("li");
             li.innerHTML = '<a href="write.php" style="color: inherit; text-decoration: none;">write</a>';
             document.getElementById("auth-login").before(li);

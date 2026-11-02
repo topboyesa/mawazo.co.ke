@@ -4,6 +4,7 @@
 //   GET  comments.php?post=post-1 -> the comments on one article
 //   POST comments.php             -> action=add (post, body) or action=delete (id). Members only.
 require __DIR__ . '/config.php';
+require_once __DIR__ . '/notify.php';
 start_session();
 
 header('Content-Type: application/json');
@@ -122,6 +123,7 @@ try {
 
         $pdo->prepare('INSERT INTO comments (post_id, user_id, body) VALUES (?, ?, ?)')
             ->execute([$post, $userId, $body]);
+        notify($pdo, post_author_id($pdo, $post), $userId, 'comment', $post);
     } elseif ($action === 'delete') {
         $id   = (int) ($_POST['id'] ?? 0);
         $stmt = $pdo->prepare('SELECT post_id, user_id FROM comments WHERE id = ?');

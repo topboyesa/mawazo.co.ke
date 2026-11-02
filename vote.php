@@ -1,6 +1,7 @@
 <?php
 // Saves a like (1), a dislike (-1) or removes the vote (0). Members only.
 require __DIR__ . '/config.php';
+require_once __DIR__ . '/notify.php';
 start_session();
 
 header('Content-Type: application/json');
@@ -43,6 +44,13 @@ try {
     } else {
         $pdo->prepare('INSERT INTO post_votes (user_id, post_id, vote) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE vote = VALUES(vote)')
             ->execute([$userId, $post, $vote]);
+    }
+
+    // Tell the post's author (and take back an earlier like or dislike from this member).
+    $author = post_author_id($pdo, $post);
+    unnotify($pdo, $author, $userId, ['like', 'dislike'], $post);
+    if ($vote !== 0) {
+        notify($pdo, $author, $userId, $vote === 1 ? 'like' : 'dislike', $post);
     }
 
     $stmt = $pdo->prepare('SELECT SUM(vote = 1) AS likes, SUM(vote = -1) AS dislikes FROM post_votes WHERE post_id = ?');

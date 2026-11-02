@@ -1,10 +1,20 @@
 <?php
-// Database settings. Fill these in for your server.
-// Keep this file out of Git: add "config.php" to your .gitignore.
-const DB_HOST = 'localhost';
-const DB_NAME = 'ai_slop';
-const DB_USER = 'root';
-const DB_PASS = '';
+// Database settings. Keep this file out of Git: add "config.php" to your .gitignore.
+//
+// On your own computer (http://localhost/...) the site uses the local XAMPP database.
+// On the live site it uses the hosting database. Fill in the live password below.
+$host = $_SERVER['HTTP_HOST'] ?? '';
+if ($host === 'localhost' || $host === '127.0.0.1' || strpos($host, 'localhost:') === 0) {
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'ai_slop');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+} else {
+    define('DB_HOST', 'sql111.infinityfree.com');
+    define('DB_NAME', 'if0_43294070_ai_slop');
+    define('DB_USER', 'if0_43294070');
+    define('DB_PASS', '363RxJaXIZ');
+}
 
 function db(): PDO
 {

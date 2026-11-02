@@ -71,3 +71,47 @@ CREATE TABLE IF NOT EXISTS posts (
     body       TEXT         NOT NULL,
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Who follows the site owner (the "Follow @name" option in the ... menu on each post).
+CREATE TABLE IF NOT EXISTS follows (
+    follower_id INT UNSIGNED NOT NULL,
+    followed_id INT UNSIGNED NOT NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_id, followed_id),
+    FOREIGN KEY (follower_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (followed_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Who wrote each post. Posts without a row here were written by the site owner (the first admin).
+CREATE TABLE IF NOT EXISTS post_authors (
+    post_id INT UNSIGNED NOT NULL PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Notifications: someone liked, disliked or commented on your post, or followed you.
+CREATE TABLE IF NOT EXISTS notifications (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT UNSIGNED NOT NULL,           -- who gets the notification
+    actor_id   INT UNSIGNED NOT NULL,           -- who did it
+    type       VARCHAR(10)  NOT NULL,           -- like, dislike, comment or follow
+    post_id    VARCHAR(20)  NULL,               -- post-4 and so on (empty for follows)
+    is_read    TINYINT(1)   NOT NULL DEFAULT 0,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_unread (user_id, is_read, id),
+    FOREIGN KEY (user_id)  REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Password reset links. Only a scrambled copy of each token is stored, and each one expires after an hour.
+CREATE TABLE IF NOT EXISTS password_resets (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT UNSIGNED NOT NULL,
+    token_hash CHAR(64)     NOT NULL,
+    expires_at DATETIME     NOT NULL,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_token (token_hash),
+    INDEX idx_user_time (user_id, created_at),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
