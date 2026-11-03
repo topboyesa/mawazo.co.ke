@@ -21,16 +21,22 @@ function site_base(): string
     return rtrim(SITE_URL, '/');
 }
 
-function send_reset_mail(string $to, string $username, string $link): bool
+// $accounts is a list of ['username' => ..., 'link' => ...]: one reset link for each account that uses this email.
+function send_reset_mail(string $to, array $accounts): bool
 {
     if (SITE_URL === '' || MAIL_FROM === '') {
         error_log('Password reset: fill in SITE_URL and MAIL_FROM in reset-config.php');
         return false;
     }
-    $message = "Hi @$username,\r\n\r\n"
-        . "Someone asked to reset the password for your AI SLOP account. Open this link within one hour to choose a new one:\r\n\r\n"
-        . "$link\r\n\r\n"
-        . "If that wasn't you, ignore this email and your password stays the same.\r\n";
+    $message = "Someone asked to reset a password for your AI SLOP account.\r\n\r\n";
+    $message .= count($accounts) > 1
+        ? "More than one account uses this email. Open the link for the account you want, within one hour:\r\n\r\n"
+        : "Open this link within one hour to choose a new password:\r\n\r\n";
+    foreach ($accounts as $account) {
+        $message .= '@' . $account['username'] . ":\r\n" . $account['link'] . "\r\n\r\n";
+    }
+    $message .= "If that wasn't you, ignore this email and nothing changes.\r\n";
+
     $headers = 'From: ' . MAIL_FROM . "\r\nContent-Type: text/plain; charset=UTF-8\r\n";
     $sent = @mail($to, 'Reset your AI SLOP password', $message, $headers);
     if (!$sent) {

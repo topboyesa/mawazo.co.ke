@@ -39,7 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!$errors) {
             try {
-                $pdo  = db();
+                $pdo = db();
+
+                // Every username belongs to one account only (capital letters don't count: Sam and sam are the same name).
+                // The same email address can be used for more than one account.
+                $taken = $pdo->prepare('SELECT 1 FROM users WHERE username = ?');
+                $taken->execute([$username]);
+                if ($taken->fetchColumn()) {
+                    $errors[] = 'That username is already taken. Please choose another.';
+                    throw new RuntimeException('taken');
+                }
+
                 $stmt = $pdo->prepare('INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)');
                 $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT)]);
 
@@ -50,11 +60,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             } catch (PDOException $ex) {
                 if ($ex->getCode() === '23000') {
-                    $errors[] = 'That username or email is already taken.';
+                    $errors[] = 'That username is already taken. Please choose another.';
                 } else {
                     error_log($ex->getMessage());
                     $errors[] = 'Something went wrong. Please try again.';
                 }
+            }
+            // PDOException is itself a kind of RuntimeException, so this catch has to come second.
+            catch (RuntimeException $ex) {
+                // Already explained above (username or email taken).
             }
         }
     }

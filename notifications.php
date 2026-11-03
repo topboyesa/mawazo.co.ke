@@ -69,9 +69,9 @@ page_head('Notifications');
 <ul style="max-width: 720px; margin: 0 auto 1.5rem; padding: 0 12px; list-style: none;">
 <?php foreach ($items as $n): ?>
     <li style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--line);<?= $n['is_read'] ? '' : ' background: var(--hover);' ?>">
-        <?= avatar_html($n['actor']) ?>
+        <a href="user.php?u=<?= e(rawurlencode($n['actor'])) ?>"><?= avatar_html($n['actor']) ?></a>
         <div>
-            <strong>@<?= e($n['actor']) ?></strong>
+            <a href="user.php?u=<?= e(rawurlencode($n['actor'])) ?>" style="color: inherit; text-decoration: none;"><strong>@<?= e($n['actor']) ?></strong></a>
             <?= e($sentence[$n['type']] ?? $n['type']) ?>
 <?php if ($n['post_id'] !== null && $n['title'] !== null): ?>
             <a href="index.html#<?= e($n['post_id']) ?>"><?= e($n['title']) ?></a>

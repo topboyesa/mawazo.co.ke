@@ -89,13 +89,13 @@ page_head('Members');
 <?php $isOnline = $m['seen'] !== null && $now - (int) $m['seen'] <= 300; ?>
         <tr style="border-bottom: 1px solid var(--line);">
             <td style="padding: 8px;">
-                <span style="display: inline-flex; align-items: center; gap: 10px;">
+                <a href="user.php?u=<?= e(rawurlencode($m['username'])) ?>" style="display: inline-flex; align-items: center; gap: 10px; color: inherit; text-decoration: none;">
                     <?= avatar_html($m['username']) ?>
                     <strong>@<?= e($m['username']) ?></strong>
 <?php if ($m['is_admin']): ?>
                     <span style="opacity: 0.7; font-size: 0.85em;">admin</span>
 <?php endif; ?>
-                </span>
+                </a>
             </td>
             <td style="padding: 8px; overflow-wrap: anywhere;"><?= e($m['email']) ?></td>
             <td style="padding: 8px; white-space: nowrap;"><?= e(date('j M Y', strtotime($m['joined']))) ?></td>

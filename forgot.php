@@ -12,7 +12,7 @@ if (!empty($_SESSION['user_id'])) {
 
 $errors  = [];
 $sent    = false;
-$devLink = null;
+$devLinks = [];
 $email   = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,23 +29,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $stmt = $pdo->prepare('SELECT id, username FROM users WHERE email = ?');
                 $stmt->execute([$email]);
-                $user = $stmt->fetch();
 
+                // One reset link for each account that uses this email.
                 // At most 3 links an hour per account, so nobody can flood an inbox.
-                if ($user) {
+                $links = [];
+                foreach ($stmt->fetchAll() as $account) {
                     $recent = $pdo->prepare('SELECT COUNT(*) FROM password_resets WHERE user_id = ? AND created_at > (NOW() - INTERVAL 1 HOUR)');
-                    $recent->execute([(int) $user['id']]);
+                    $recent->execute([(int) $account['id']]);
                     if ((int) $recent->fetchColumn() < 3) {
                         $token = bin2hex(random_bytes(32));
                         $pdo->prepare('INSERT INTO password_resets (user_id, token_hash, expires_at) VALUES (?, ?, NOW() + INTERVAL 1 HOUR)')
-                            ->execute([(int) $user['id'], hash('sha256', $token)]);
+                            ->execute([(int) $account['id'], hash('sha256', $token)]);
+                        $links[] = ['username' => $account['username'], 'link' => site_base() . '/reset.php?token=' . $token];
+                    }
+                }
 
-                        $link = site_base() . '/reset.php?token=' . $token;
-                        if (is_local()) {
-                            $devLink = $link;
-                        } else {
-                            send_reset_mail($email, $user['username'], $link);
-                        }
+                if ($links) {
+                    if (is_local()) {
+                        $devLinks = $links;
+                    } else {
+                        send_reset_mail($email, $links);
                     }
                 }
                 // The same answer whether or not the email has an account.
@@ -70,9 +73,9 @@ page_head('Forgot password');
 
 <?php if ($sent): ?>
 <p style="text-align: center; max-width: 480px; margin: 0 auto 1rem; padding: 0 12px;">If that email has an account, a reset link is on its way. It works for one hour.</p>
-<?php if ($devLink): ?>
-<p style="text-align: center; max-width: 480px; margin: 0 auto 1rem; padding: 0 12px; overflow-wrap: anywhere;">Local test: email isn't sent from localhost, so here is the link: <a href="<?= e($devLink) ?>">reset my password</a></p>
-<?php endif; ?>
+<?php foreach ($devLinks as $dev): ?>
+<p style="text-align: center; max-width: 480px; margin: 0 auto 1rem; padding: 0 12px; overflow-wrap: anywhere;">Local test: email isn't sent from localhost. Reset link for @<?= e($dev['username']) ?>: <a href="<?= e($dev['link']) ?>">reset password</a></p>
+<?php endforeach; ?>
 <?php else: ?>
 <form class="auth" method="post" action="forgot.php">
     <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
