@@ -23,3 +23,5 @@ truehost, & namecheap domains.
 I think the paragraphs would look better if it was centralized. 
 How about suggesting paragraphing?
 what is the default sorting? it should always revert to latest posts whenever someone logs in
+articles should preview the top comment
+top posts
