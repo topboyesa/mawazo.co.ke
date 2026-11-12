@@ -11,13 +11,6 @@ Make use of your writing capabilities, you never know, you could posses some pre
 All the best pals.
 
 CONTENT
-1. WEB DEVELOPMENT IN THE ERA OF AI
-Building a full-stack application is easy. 
-With Ai, it lacks pizzaz. You have no control over the project want to build and have fun at the same time while doing it?
-Build your own applications. From your simple ideas that might seem useless to you at the moment. Sometimes the end goal is not to make money, maybe you just want to sharpen your skills, maybe you.
-So how do you do it without the slop.
-Visualize your idea in your mind. What do you want your app to do? Write that. What knowledge of programming do you have? Write That. Then tell ai to create you the app you want by copy pasting what you just wrote above. The app should be done using the programming knowledge you have. That should make it easier to learn and understand. 
-Soon you'll be building fully functional applications all by yourself.
 
 TODOs
 ai-slop name update,
@@ -27,3 +20,6 @@ future(ai-slop - scrolls - mawazo)
 post everything to Swahili bot, view in English button.
 time spent reading - wakatime
 truehost, & namecheap domains.
+I think the paragraphs would look better if it was centralized. 
+How about suggesting paragraphing?
+what is the default sorting? it should always revert to latest posts whenever someone logs in
