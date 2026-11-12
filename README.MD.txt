@@ -25,3 +25,4 @@ How about suggesting paragraphing?
 what is the default sorting? it should always revert to latest posts whenever someone logs in
 articles should preview the top comment
 top posts
+filing copyrights
