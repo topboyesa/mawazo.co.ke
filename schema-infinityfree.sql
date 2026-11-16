@@ -130,3 +130,58 @@ CREATE TABLE IF NOT EXISTS user_avatars (
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Every spelling and grammar check, so each member's daily limit can be counted.
+CREATE TABLE IF NOT EXISTS ai_checks (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT UNSIGNED NOT NULL,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_time (user_id, created_at),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Pictures and GIFs on posts. The files live in the media folder; this table remembers which post each one belongs to.
+CREATE TABLE IF NOT EXISTS post_media (
+    id         INT UNSIGNED      AUTO_INCREMENT PRIMARY KEY,
+    post_id    INT UNSIGNED      NOT NULL,
+    file       VARCHAR(40)       NOT NULL,
+    mime       VARCHAR(20)       NOT NULL,
+    width      SMALLINT UNSIGNED NOT NULL,
+    height     SMALLINT UNSIGNED NOT NULL,
+    size       INT UNSIGNED      NOT NULL,
+    position   TINYINT UNSIGNED  NOT NULL DEFAULT 0,
+    created_at TIMESTAMP         NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_post (post_id, position),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Reports: a member flags a post or a comment for the admin to look at.
+CREATE TABLE IF NOT EXISTS reports (
+    id          INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    reporter_id INT UNSIGNED NOT NULL,
+    type        VARCHAR(10)  NOT NULL,                 -- post or comment
+    target_id   INT UNSIGNED NOT NULL,                 -- the post's or the comment's id
+    reason      VARCHAR(10)  NOT NULL,                 -- spam, abuse, false or other
+    details     VARCHAR(300) NULL,
+    status      VARCHAR(10)  NOT NULL DEFAULT 'open',  -- open, dismissed or removed
+    handled_by  INT UNSIGNED NULL,
+    handled_at  DATETIME     NULL,
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_report (reporter_id, type, target_id),   -- one report per person per item
+    INDEX idx_status (status, id),
+    FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Edit history: every saved version of a post, oldest first, like commits in a Git history.
+-- Version 1 is the post as it was first published; each edit adds the next version.
+CREATE TABLE IF NOT EXISTS post_versions (
+    id         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    post_id    INT UNSIGNED NOT NULL,
+    version    INT UNSIGNED NOT NULL,
+    title      VARCHAR(200) NOT NULL,
+    body       TEXT         NOT NULL,
+    edited_by  INT UNSIGNED NULL,
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_version (post_id, version),
+    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

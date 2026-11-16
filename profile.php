@@ -142,7 +142,7 @@ page_head('Profile photo');
     <strong>@<?= e($username) ?></strong>
 </div>
 
-<form class="auth" method="post" action="profile.php" enctype="multipart/form-data">
+<form class="auth" method="post" action="profile.php" enctype="multipart/form-data" hx-boost="false">
     <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
     <input type="hidden" name="action" value="upload">
 

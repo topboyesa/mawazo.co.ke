@@ -10,23 +10,15 @@ function page_head(string $title): void
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title) ?> - AI SLOP</title>
+    <meta name="htmx-config" content='{"historyCacheSize": 0, "allowEval": false}'>
     <style>
-        :root { --bg: #fff; --fg: #000; --line: #ccc; }
-        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; color-scheme: dark; }
+        :root { --bg: #fff; --fg: #000; --line: #ccc; --hover: #f2f2f2; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; --hover: #2a2a2a; color-scheme: dark; }
         body { background: var(--bg); color: var(--fg); }
-        :root.dark a { color: #8ab4f8; }
-        h2 { text-align: center; }
-        form.auth { max-width: 360px; margin: 0 auto 1.5rem; padding: 0 12px; }
-        form.auth label { display: block; margin-top: 12px; }
-        form.auth input { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
-        form.auth button { margin-top: 16px; width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--fg); color: var(--bg); font: inherit; cursor: pointer; }
-        ul.errors { max-width: 360px; margin: 0 auto 1rem; color: #c0392b; }
-        :root.dark ul.errors { color: #ff7b72; }
-        .pw { position: relative; }
-        form.auth .pw input { padding-right: 42px; }
-        form.auth .pw-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); display: flex; width: auto; margin: 0; padding: 4px; border: none; border-radius: 50%; background: none; color: inherit; opacity: 0.7; cursor: pointer; }
-        form.auth .pw-toggle:hover { opacity: 1; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script src="smooth.js"></script>
+    <script src="format.js"></script>
     <script>
         (function () {
             var mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -52,7 +44,24 @@ function page_head(string $title): void
         })();
     </script>
 </head>
-<body>
+<body hx-boost="true" hx-swap="innerHTML transition:true">
+<style>
+        :root { --bg: #fff; --fg: #000; --line: #ccc; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; color-scheme: dark; }
+        body { background: var(--bg); color: var(--fg); }
+        :root.dark a { color: #8ab4f8; }
+        h2 { text-align: center; }
+        form.auth { max-width: 360px; margin: 0 auto 1.5rem; padding: 0 12px; }
+        form.auth label { display: block; margin-top: 12px; }
+        form.auth input { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
+        form.auth button { margin-top: 16px; width: 100%; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--fg); color: var(--bg); font: inherit; cursor: pointer; }
+        ul.errors { max-width: 360px; margin: 0 auto 1rem; color: #c0392b; }
+        :root.dark ul.errors { color: #ff7b72; }
+        .pw { position: relative; }
+        form.auth .pw input { padding-right: 42px; }
+        form.auth .pw-toggle { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); display: flex; width: auto; margin: 0; padding: 4px; border: none; border-radius: 50%; background: none; color: inherit; opacity: 0.7; cursor: pointer; }
+        form.auth .pw-toggle:hover { opacity: 1; }
+</style>
 <h2><?= e($title) ?></h2>
 
 <p style="text-align: center;"><a href="index.html">&larr; back to main page</a></p>

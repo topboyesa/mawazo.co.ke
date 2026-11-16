@@ -3,8 +3,44 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>mawazobase</title>
+    <title>AI SLOP</title>
+    <meta name="htmx-config" content='{"historyCacheSize": 0, "allowEval": false}'>
     <style>
+        :root { --bg: #fff; --fg: #000; --line: #ccc; --hover: #f2f2f2; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; --hover: #2a2a2a; color-scheme: dark; }
+        body { background: var(--bg); color: var(--fg); }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script src="smooth.js"></script>
+    <script src="format.js"></script>
+    <script>
+        (function () {
+            var mq = window.matchMedia("(prefers-color-scheme: dark)");
+            function apply() {
+                var saved = null;
+                try { saved = localStorage.getItem("theme"); } catch (e) {}
+                var hour = new Date().getHours();
+                var night = hour >= 19 || hour < 6;
+                document.documentElement.classList.toggle("dark", saved ? saved === "dark" : (night || mq.matches));
+            }
+            function scheduleNext() {
+                var now = new Date(), next = new Date(now), h = now.getHours();
+                next.setMinutes(0, 0, 0);
+                if (h < 6) next.setHours(6);
+                else if (h < 19) next.setHours(19);
+                else { next.setDate(next.getDate() + 1); next.setHours(6); }
+                setTimeout(function () { apply(); scheduleNext(); }, next - now);
+            }
+            apply();
+            scheduleNext();
+            mq.addEventListener("change", apply);
+            document.addEventListener("visibilitychange", apply);
+        })();
+    </script>
+</head>
+
+<body hx-boost="true" hx-swap="innerHTML transition:true">
+<style>
         :root { --bg: #fff; --fg: #000; --line: #ccc; --hover: #f2f2f2; }
         :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; --hover: #2a2a2a; color-scheme: dark; }
         body { background: var(--bg); color: var(--fg); padding: 0 8%; }
@@ -16,7 +52,9 @@
         :root.dark .sun { display: block; }
         :root.dark .moon { display: none; }
         details ul li.active { font-weight: bold; }
-        .post-body { white-space: pre-line; }
+        .post-media { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; margin: 12px 0; }
+        .post-media.one { grid-template-columns: minmax(0, 640px); }
+        .post-media img { display: block; width: 100%; height: auto; border-radius: 8px; }
         .reactions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 1.5rem 0 0.5rem; }
         .reactions button { display: inline-flex; align-items: center; gap: 6px; background: none; border: 1px solid var(--line); border-radius: 20px; padding: 6px 12px; color: inherit; font: inherit; cursor: pointer; }
         .reactions button:hover { background: var(--hover); }
@@ -47,36 +85,34 @@
         .popover.signin { width: 280px; padding: 20px; box-sizing: border-box; border-radius: 20px; text-align: center; }
         .popover.signin .t { font-size: 1.2em; font-weight: bold; }
         .popover.signin .s { margin: 6px 0 16px; opacity: 0.7; }
+        .popover.report { width: 300px; padding: 16px; box-sizing: border-box; }
+        .popover.report .t { font-weight: bold; margin-bottom: 8px; }
+        .popover.report label { display: block; padding: 4px 0; cursor: pointer; }
+        .popover.report textarea { display: block; width: 100%; box-sizing: border-box; margin: 8px 0; padding: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; resize: vertical; }
+        .popover.report button { width: 100%; padding: 8px; border: none; border-radius: 20px; background: var(--fg); color: var(--bg); font: inherit; font-weight: bold; cursor: pointer; }
+        .popover.report .s { margin-top: 6px; color: #c0392b; }
+        .comment-delete.plain { margin-left: 0; }
+        .history-btn { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 4px 0; border: none; background: none; color: inherit; opacity: 0.75; font: inherit; font-size: 0.9em; cursor: pointer; }
+        .history-btn:hover { opacity: 1; }
+        .history { margin: 4px 0 12px; }
+        .history .node { position: relative; display: flex; align-items: flex-start; gap: 10px; padding-bottom: 14px; }
+        .history .node::before { content: ""; position: absolute; left: 6px; top: 18px; bottom: -2px; width: 2px; background: var(--line); }
+        .history .node:last-child { padding-bottom: 0; }
+        .history .node:last-child::before { display: none; }
+        .history .dot { flex: none; z-index: 1; width: 14px; height: 14px; margin-top: 4px; box-sizing: border-box; border: 2px solid var(--fg); border-radius: 50%; background: var(--bg); }
+        .history .node.current .dot, .history .node.open .dot { background: var(--fg); }
+        .history .node button { border: none; background: none; padding: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+        .history .node.open button { font-weight: bold; }
+        .history-view { margin: 8px 0 0 24px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; overflow-wrap: anywhere; }
+        .history-view .tabs { display: flex; gap: 12px; margin-bottom: 10px; }
+        .history-view .tabs button { padding: 0 0 2px; border: none; border-bottom: 2px solid transparent; background: none; color: inherit; font: inherit; opacity: 0.7; cursor: pointer; }
+        .history-view .tabs button.on { border-bottom-color: var(--fg); opacity: 1; }
+        .history-view ins { background: rgba(46, 158, 91, 0.3); text-decoration: none; }
+        .history-view del { background: rgba(192, 57, 43, 0.3); }
+        .history-view .diff { white-space: pre-wrap; }
         .popover.signin .btn { display: block; padding: 10px; border-radius: 24px; background: var(--fg); color: var(--bg); text-decoration: none; font-weight: bold; }
-    </style>
-    <script>
-        (function () {
-            var mq = window.matchMedia("(prefers-color-scheme: dark)");
-            function apply() {
-                var saved = null;
-                try { saved = localStorage.getItem("theme"); } catch (e) {}
-                var hour = new Date().getHours();
-                var night = hour >= 19 || hour < 6;
-                document.documentElement.classList.toggle("dark", saved ? saved === "dark" : (night || mq.matches));
-            }
-            function scheduleNext() {
-                var now = new Date(), next = new Date(now), h = now.getHours();
-                next.setMinutes(0, 0, 0);
-                if (h < 6) next.setHours(6);
-                else if (h < 19) next.setHours(19);
-                else { next.setDate(next.getDate() + 1); next.setHours(6); }
-                setTimeout(function () { apply(); scheduleNext(); }, next - now);
-            }
-            apply();
-            scheduleNext();
-            mq.addEventListener("change", apply);
-            document.addEventListener("visibilitychange", apply);
-        })();
-    </script>
-</head>
-
-<body>
-<h2>mawazobase</h2>
+</style>
+<h2>AI SLOP</h2>
 
 <ul style="display: flex; justify-content: center; align-items: center; gap: 2rem; list-style: none; padding: 0 0 12px 0; border-bottom: 1px solid var(--line);">
     <li style="position: relative;">
@@ -129,6 +165,13 @@
     var ownerName = null;
     function start() {
     // The little red number on the bell: how many notifications are unread.
+    function setReportBadge(n) {
+        var b = document.getElementById("report-badge");
+        if (!b) return;
+        n = n || 0;
+        b.hidden = n < 1;
+        b.textContent = n > 9 ? "9+" : n;
+    }
     function setBadge(n) {
         var b = document.getElementById("notif-badge");
         if (!b) return;
@@ -196,12 +239,22 @@
                 '<span id="notif-badge" hidden style="position: absolute; top: -6px; right: -9px; min-width: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #e0245e; color: #fff; font-size: 11px; line-height: 16px; text-align: center;"></span>';
             document.getElementById("auth-login").before(bell);
             setBadge(d.unread);
+            if (d.admin) {
+                var flagged = document.createElement("li");
+                flagged.style.position = "relative";
+                flagged.innerHTML = '<a href="reports.php" style="color: inherit; text-decoration: none;">reports</a>' +
+                    '<span id="report-badge" hidden style="position: absolute; top: -8px; right: -14px; min-width: 16px; padding: 0 4px; box-sizing: border-box; border-radius: 8px; background: #e0245e; color: #fff; font-size: 11px; line-height: 16px; text-align: center;"></span>';
+                document.getElementById("auth-login").before(flagged);
+                setReportBadge(d.reports);
+            }
             // Check for new likes, comments and follows every half minute while the page is open.
-            setInterval(function () {
+            if (window.__badgeTimer) clearInterval(window.__badgeTimer);
+            window.__badgeTimer = setInterval(function () {
+                if (!document.getElementById("notif-badge")) { clearInterval(window.__badgeTimer); return; }   // left the main page
                 if (document.hidden) return;
                 fetch("me.php", { credentials: "same-origin" })
                     .then(function (r) { return r.ok ? r.json() : null; })
-                    .then(function (x) { if (x) setBadge(x.unread); })
+                    .then(function (x) { if (x) { setBadge(x.unread); setReportBadge(x.reports); } })
                     .catch(function () {});
             }, 30000);
         })
@@ -365,12 +418,13 @@
         openPopover = el;
     }
 
-    document.addEventListener("click", function (e) {
-        if (openPopover && !openPopover.contains(e.target)) closePopover();
-    });
-    document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape") closePopover();
-    });
+    // The document outlives each smooth page change, so swap out the listeners from an earlier visit.
+    if (window.__popClick) document.removeEventListener("click", window.__popClick);
+    if (window.__popKey) document.removeEventListener("keydown", window.__popKey);
+    window.__popClick = function (e) { if (openPopover && !openPopover.contains(e.target)) closePopover(); };
+    window.__popKey = function (e) { if (e.key === "Escape") closePopover(); };
+    document.addEventListener("click", window.__popClick);
+    document.addEventListener("keydown", window.__popKey);
 
     // Shown when a visitor who is not logged in tries to like, dislike, follow or comment.
     function signInPrompt(anchor, title) {
@@ -379,6 +433,69 @@
         el.innerHTML = '<div class="t"></div><div class="s">Sign in to continue</div><a class="btn" href="login.php">Sign in</a>';
         el.querySelector(".t").textContent = title;
         showPopover(anchor, el, false);
+    }
+
+    var reportReasons = [["spam", "Spam"], ["abuse", "Abusive or hateful"], ["false", "Fake or misleading"], ["other", "Something else"]];
+
+    // A small form for reporting a post or a comment to the admin.
+    function reportPrompt(anchor, type, id) {
+        if (!loggedIn) { signInPrompt(anchor, "Want to report this " + type + "?"); return; }
+        var el = document.createElement("div");
+        el.className = "report";
+        var title = document.createElement("div");
+        title.className = "t";
+        title.textContent = "Report this " + type;
+        el.appendChild(title);
+
+        var form = document.createElement("form");
+        reportReasons.forEach(function (r, k) {
+            var label = document.createElement("label");
+            var input = document.createElement("input");
+            input.type = "radio";
+            input.name = "reason";
+            input.value = r[0];
+            input.checked = k === 0;
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(" " + r[1]));
+            form.appendChild(label);
+        });
+        var note = document.createElement("textarea");
+        note.rows = 2;
+        note.maxLength = 300;
+        note.placeholder = "Anything we should know? (optional)";
+        var send = document.createElement("button");
+        send.type = "submit";
+        send.textContent = "Send report";
+        var msg = document.createElement("div");
+        msg.className = "s";
+        form.appendChild(note);
+        form.appendChild(send);
+        form.appendChild(msg);
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            send.disabled = true;
+            msg.textContent = "";
+            fetch("report.php", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ csrf: csrf, type: type, id: id, reason: form.reason.value, details: note.value })
+            })
+                .then(function (r) {
+                    return r.json().catch(function () { return {}; }).then(function (d) {
+                        if (!r.ok) throw new Error(d.error || "Something went wrong. Please try again.");
+                        return d;
+                    });
+                })
+                .then(function () {
+                    el.textContent = "Thanks. We'll take a look.";
+                    setTimeout(function () { if (openPopover === el) closePopover(); }, 2000);
+                })
+                .catch(function (ex) { msg.textContent = ex.message; send.disabled = false; });
+        });
+        el.appendChild(form);
+        showPopover(anchor, el, type === "post");
     }
 
     function deletePost(a) {
@@ -446,6 +563,7 @@
         }
         if (who && who !== follow.me) {
             item((follow.set[who] ? "Unfollow @" : "Follow @") + who, function () { toggleFollow(btn, who); });
+            item("Report post", function () { reportPrompt(btn, "post", a.dataset.db); });
         }
         showPopover(btn, el, true);
     }
@@ -537,6 +655,15 @@
                 head.appendChild(del);
             }
 
+            if (c.user !== follow.me) {
+                var flag = document.createElement("button");
+                flag.type = "button";
+                flag.className = c.canDelete ? "comment-delete plain" : "comment-delete";
+                flag.textContent = "report";
+                flag.addEventListener("click", function (e) { e.stopPropagation(); reportPrompt(flag, "comment", c.id); });
+                head.appendChild(flag);
+            }
+
             var body = document.createElement("div");
             body.className = "comment-body";
             body.textContent = c.body;
@@ -622,6 +749,108 @@
     }
 
     // Posts written from the site (write.php) are added after the three hand-written ones.
+    var gitIcon = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>';
+
+    // The edit history of a post, drawn like a Git log: newest at the top, each version a dot on a line.
+    function toggleHistory(a, id) {
+        var box = a.querySelector(".history");
+        if (box) { box.hidden = !box.hidden; return; }
+        box = document.createElement("div");
+        box.className = "history";
+        box.textContent = "Loading...";
+        a.querySelector(".history-btn").after(box);
+        fetch("versions.php?post=" + encodeURIComponent(id))
+            .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function (d) { drawHistory(box, d.versions || []); })
+            .catch(function () { box.textContent = "Could not load the history."; });
+    }
+
+    function drawHistory(box, versions) {
+        box.textContent = "";
+        if (!versions.length) { box.textContent = "No saved versions yet."; return; }
+        var list = document.createElement("div");
+        var view = document.createElement("div");
+        view.className = "history-view";
+
+        function openVersion(i) {
+            list.querySelectorAll(".node").forEach(function (node) {
+                node.classList.toggle("open", Number(node.dataset.index) === i);
+            });
+            showVersion(view, versions, i);
+        }
+
+        for (var i = versions.length - 1; i >= 0; i--) {   // newest first
+            (function (i) {
+                var v = versions[i];
+                var node = document.createElement("div");
+                node.className = "node" + (i === versions.length - 1 ? " current" : "");
+                node.dataset.index = i;
+                var dot = document.createElement("span");
+                dot.className = "dot";
+                var btn = document.createElement("button");
+                btn.type = "button";
+                var tag = i === versions.length - 1 ? " (current)" : i === 0 ? " (original)" : "";
+                btn.textContent = "Version " + v.n + tag + " \u00b7 " + new Date(v.ts * 1000).toLocaleString() + (v.editor ? " \u00b7 @" + v.editor : "");
+                btn.addEventListener("click", function () { openVersion(i); });
+                node.appendChild(dot);
+                node.appendChild(btn);
+                list.appendChild(node);
+            })(i);
+        }
+        box.appendChild(list);
+        box.appendChild(view);
+        openVersion(versions.length - 1);
+    }
+
+    // One version: what changed since the one before it, or its full text.
+    function showVersion(view, versions, i) {
+        var v = versions[i], prev = i > 0 ? versions[i - 1] : null;
+        view.textContent = "";
+
+        function full() {
+            body.textContent = "";
+            var h = document.createElement("strong");
+            h.textContent = v.title;
+            body.appendChild(h);
+            var text = document.createElement("div");
+            text.className = "fmt";
+            text.style.marginTop = "8px";
+            if (window.renderPost) text.appendChild(window.renderPost(v.body)); else text.textContent = v.body;
+            body.appendChild(text);
+        }
+        function changes() {
+            body.textContent = "";
+            var diff = document.createElement("div");
+            diff.className = "diff";
+            if (window.renderDiff) window.renderDiff(prev.title + "\n\n" + prev.body, v.title + "\n\n" + v.body, diff);
+            else diff.textContent = v.body;
+            body.appendChild(diff);
+        }
+
+        var body = document.createElement("div");
+        if (prev) {
+            var tabs = document.createElement("div");
+            tabs.className = "tabs";
+            [["Changes", changes], ["Full text", full]].forEach(function (t, k) {
+                var b = document.createElement("button");
+                b.type = "button";
+                b.textContent = t[0];
+                b.className = k === 0 ? "on" : "";
+                b.addEventListener("click", function () {
+                    tabs.querySelectorAll("button").forEach(function (x) { x.classList.toggle("on", x === b); });
+                    t[1]();
+                });
+                tabs.appendChild(b);
+            });
+            view.appendChild(tabs);
+            view.appendChild(body);
+            changes();
+        } else {
+            view.appendChild(body);
+            full();
+        }
+    }
+
     function showPosts(d) {
         var box = document.getElementById("articles");
         d.posts.forEach(function (p) {
@@ -632,9 +861,14 @@
             if (p.canManage) a.dataset.manage = "1";
             var h = document.createElement("h2");
             h.textContent = p.title;
-            var body = document.createElement("p");
-            body.className = "post-body";
-            body.textContent = p.body;
+            var body = document.createElement("div");
+            body.className = "post-body fmt";
+            if (window.renderPost) {
+                body.appendChild(window.renderPost(p.body));
+            } else {
+                body.style.whiteSpace = "pre-line";   // format.js is missing: show the text as typed
+                body.textContent = p.body;
+            }
             var when = document.createElement("time");
             when.setAttribute("datetime", p.datetime);
             when.style.display = "block";
@@ -644,7 +878,36 @@
             it.appendChild(when);
             a.appendChild(h);
             a.appendChild(body);
+            if (p.media && p.media.length) {
+                var gallery = document.createElement("div");
+                gallery.className = "post-media" + (p.media.length === 1 ? " one" : "");
+                p.media.forEach(function (m) {
+                    var link = document.createElement("a");
+                    link.href = "media.php?id=" + m.id;
+                    link.target = "_blank";
+                    link.rel = "noopener";
+                    var img = document.createElement("img");
+                    img.src = "media.php?id=" + m.id;
+                    img.width = m.w;
+                    img.height = m.h;
+                    img.loading = "lazy";
+                    img.alt = "";
+                    link.appendChild(img);
+                    gallery.appendChild(link);
+                });
+                a.appendChild(gallery);
+            }
             a.appendChild(it);
+            if (p.versions > 1) {
+                var hb = document.createElement("button");
+                hb.type = "button";
+                hb.className = "history-btn";
+                hb.title = "See how this post changed";
+                hb.innerHTML = gitIcon;
+                hb.appendChild(document.createTextNode(" Edited \u00b7 " + p.versions + " versions"));
+                hb.addEventListener("click", function () { toggleHistory(a, p.id.replace("post-", "")); });
+                a.appendChild(hb);
+            }
             box.appendChild(a);
         });
         ownerName = d.owner || null;

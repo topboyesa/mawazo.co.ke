@@ -30,6 +30,26 @@ try {
          ORDER BY p.id ASC'
     )->fetchAll();
 
+    // Pictures on each post. If the pictures table isn't there yet, posts just show without them.
+    $media = [];
+    try {
+        foreach ($pdo->query('SELECT id, post_id, mime, width, height FROM post_media ORDER BY post_id, position, id')->fetchAll() as $m) {
+            $media[(int) $m['post_id']][] = ['id' => (int) $m['id'], 'w' => (int) $m['width'], 'h' => (int) $m['height']];
+        }
+    } catch (PDOException $ex) {
+        error_log($ex->getMessage());
+    }
+
+    // How many saved versions each post has. More than one means it was edited.
+    $versionCounts = [];
+    try {
+        foreach ($pdo->query('SELECT post_id, COUNT(*) AS n FROM post_versions GROUP BY post_id')->fetchAll() as $v) {
+            $versionCounts[(int) $v['post_id']] = (int) $v['n'];
+        }
+    } catch (PDOException $ex) {
+        error_log($ex->getMessage());
+    }
+
     $posts = [];
     foreach ($rows as $r) {
         $ts   = strtotime($r['created']);
@@ -40,6 +60,8 @@ try {
             'body'      => $r['body'],
             'author'    => $r['author'] ?? $owner,
             'canManage' => $admin || $mine,
+            'media'     => $media[(int) $r['id']] ?? [],
+            'versions'  => $versionCounts[(int) $r['id']] ?? 0,
             'datetime'  => date('Y-m-d\TH:i', $ts),
             'label'     => date('l jS F, Y. Hi', $ts) . ' HRS',
         ];

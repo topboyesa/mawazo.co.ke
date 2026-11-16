@@ -4,18 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>About - AI SLOP</title>
+    <meta name="htmx-config" content='{"historyCacheSize": 0, "allowEval": false}'>
     <style>
-        :root { --bg: #fff; --fg: #000; --line: #ccc; }
-        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; color-scheme: dark; }
-        body { background: var(--bg); color: var(--fg); padding: 0 8%; }
-        :root.dark a { color: #8ab4f8; }
-        h1, h2 { text-align: center; }
-        main { max-width: 720px; margin: 0 auto 3rem; line-height: 1.6; }
-        .back { text-align: center; }
-        .cta { text-align: center; margin: 2rem 0 0.5rem; }
-        .cta a.btn { display: inline-block; padding: 12px 28px; border-radius: 24px; background: var(--fg); color: var(--bg); font-weight: bold; text-decoration: none; }
-        .small { text-align: center; opacity: 0.8; }
+        :root { --bg: #fff; --fg: #000; --line: #ccc; --hover: #f2f2f2; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; --hover: #2a2a2a; color-scheme: dark; }
+        body { background: var(--bg); color: var(--fg); }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script src="smooth.js"></script>
+    <script src="format.js"></script>
     <script>
         (function () {
             var mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -42,7 +39,19 @@
     </script>
 </head>
 
-<body>
+<body hx-boost="true" hx-swap="innerHTML transition:true">
+<style>
+        :root { --bg: #fff; --fg: #000; --line: #ccc; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; color-scheme: dark; }
+        body { background: var(--bg); color: var(--fg); padding: 0 8%; }
+        :root.dark a { color: #8ab4f8; }
+        h1, h2 { text-align: center; }
+        main { max-width: 720px; margin: 0 auto 3rem; line-height: 1.6; }
+        .back { text-align: center; }
+        .cta { text-align: center; margin: 2rem 0 0.5rem; }
+        .cta a.btn { display: inline-block; padding: 12px 28px; border-radius: 24px; background: var(--fg); color: var(--bg); font-weight: bold; text-decoration: none; }
+        .small { text-align: center; opacity: 0.8; }
+</style>
 <h1>About AI SLOP</h1>
 <p class="back"><a href="index.html">&larr; back to main page</a></p>
 

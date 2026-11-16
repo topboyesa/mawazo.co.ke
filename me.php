@@ -10,6 +10,7 @@ header('Cache-Control: no-store');
 if (!empty($_SESSION['user_id'])) {
     $admin  = false;
     $unread = 0;
+    $openReports = 0;
     try {
         $pdo  = db();
         $stmt = $pdo->prepare('SELECT 1 FROM admins WHERE user_id = ?');
@@ -20,13 +21,22 @@ if (!empty($_SESSION['user_id'])) {
         $stmt->execute([(int) $_SESSION['user_id']]);
         $unread = (int) $stmt->fetchColumn();
 
+        // For admins: how many reports are waiting.
+        if ($admin) {
+            try {
+                $openReports = (int) $pdo->query("SELECT COUNT(*) FROM reports WHERE status = 'open'")->fetchColumn();
+            } catch (PDOException $ex) {
+                // No reports table yet.
+            }
+        }
+
         // Remember that this member is active right now (for the admin users page).
         $pdo->prepare('INSERT INTO user_activity (user_id, last_seen) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE last_seen = NOW()')
             ->execute([(int) $_SESSION['user_id']]);
     } catch (PDOException $ex) {
         // A missing table just means no admin rights or no notifications yet.
     }
-    echo json_encode(['user' => $_SESSION['username'], 'csrf' => csrf_token(), 'admin' => $admin, 'unread' => $unread]);
+    echo json_encode(['user' => $_SESSION['username'], 'csrf' => csrf_token(), 'admin' => $admin, 'unread' => $unread, 'reports' => $openReports]);
 } else {
     echo json_encode(['user' => null]);
 }

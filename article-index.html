@@ -4,13 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Index - AI SLOP</title>
+    <meta name="htmx-config" content='{"historyCacheSize": 0, "allowEval": false}'>
     <style>
-        :root { --bg: #fff; --fg: #000; }
-        :root.dark { --bg: #121212; --fg: #e8e8e8; color-scheme: dark; }
+        :root { --bg: #fff; --fg: #000; --line: #ccc; --hover: #f2f2f2; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; --line: #444; --hover: #2a2a2a; color-scheme: dark; }
         body { background: var(--bg); color: var(--fg); }
-        :root.dark a { color: #8ab4f8; }
-        h2 { text-align: center; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script src="smooth.js"></script>
+    <script src="format.js"></script>
     <script>
         (function () {
             var mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -37,7 +39,14 @@
     </script>
 </head>
 
-<body>
+<body hx-boost="true" hx-swap="innerHTML transition:true">
+<style>
+        :root { --bg: #fff; --fg: #000; }
+        :root.dark { --bg: #121212; --fg: #e8e8e8; color-scheme: dark; }
+        body { background: var(--bg); color: var(--fg); }
+        :root.dark a { color: #8ab4f8; }
+        h2 { text-align: center; }
+</style>
 <h2>Index</h2>
 
 <p style="text-align: center;"><a href="index.html">&larr; back to main page</a></p>

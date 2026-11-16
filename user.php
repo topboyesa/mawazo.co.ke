@@ -92,7 +92,16 @@ page_head('@' . $user['username']);
 
     <div style="margin-top: 12px;">
 <?php if ($isMe): ?>
-        <a href="profile.php">Change profile photo</a>
+        <style>.menu-summary::-webkit-details-marker { display: none; }</style>
+        <details id="profile-menu" style="display: inline-block; position: relative;">
+            <summary class="menu-summary" aria-label="profile menu" title="menu" style="display: flex; padding: 8px 14px; border: 1px solid var(--line); border-radius: 24px; list-style: none; cursor: pointer;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="19" cy="12" r="2"></circle></svg>
+            </summary>
+            <div style="position: absolute; left: 50%; transform: translateX(-50%); z-index: 5; margin-top: 6px; min-width: 220px; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25); overflow: hidden;">
+                <a href="profile.php" style="display: block; padding: 12px 16px; color: inherit; text-decoration: none;">Change profile photo</a>
+                <a href="settings.php" style="display: block; padding: 12px 16px; color: inherit; text-decoration: none; border-top: 1px solid var(--line);">Account settings</a>
+            </div>
+        </details>
 <?php elseif ($me > 0): ?>
         <button id="follow-btn" type="button" data-csrf="<?= e(csrf_token()) ?>" data-user="<?= e($user['username']) ?>" data-following="<?= $iFollow ? '1' : '0' ?>"
                 style="padding: 8px 24px; border: 1px solid var(--line); border-radius: 24px; background: var(--fg); color: var(--bg); font: inherit; font-weight: bold; cursor: pointer;"><?= $iFollow ? 'Unfollow' : 'Follow' ?></button>
@@ -120,7 +129,9 @@ page_head('@' . $user['username']);
 <ul style="max-width: 720px; margin: 0 auto 1.5rem; padding: 0 12px; list-style: none;">
 <?php foreach ($posts as $p): ?>
 <?php
-    $excerpt = preg_match('/^.{0,160}/us', preg_replace('/\s+/', ' ', $p['body']), $m) ? $m[0] : '';
+    // Drop code blocks and the formatting symbols, so the preview reads as plain words.
+    $plain   = preg_replace(['/```.*?```/s', '/\[([^\]]+)\]\(https?:[^)]*\)/', '/[*`>#]+/'], ['', '$1', ''], $p['body']);
+    $excerpt = preg_match('/^.{0,160}/us', preg_replace('/\s+/', ' ', $plain), $m) ? $m[0] : '';
     if (strlen($p['body']) > strlen($excerpt)) {
         $excerpt = rtrim($excerpt) . '...';
     }
@@ -159,5 +170,14 @@ page_head('@' . $user['username']);
                 .then(function () { btn.disabled = false; });
         });
     })();
+</script>
+<script>
+    // Click anywhere else and the profile menu closes.
+    if (window.__profileMenuClick) document.removeEventListener("click", window.__profileMenuClick);
+    window.__profileMenuClick = function (e) {
+        var menu = document.getElementById("profile-menu");
+        if (menu && menu.open && !menu.contains(e.target)) menu.open = false;
+    };
+    document.addEventListener("click", window.__profileMenuClick);
 </script>
 <?php page_foot();
